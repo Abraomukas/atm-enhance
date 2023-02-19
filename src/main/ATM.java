@@ -1,3 +1,7 @@
+package main;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -18,11 +22,11 @@ public class ATM {
     private int calculateBalance() {
         int balance = 0;
 
-        addNote(BankNote.FIVE, 5);
-        addNote(BankNote.TEN, 5);
-        addNote(BankNote.TWENTY, 5);
-        addNote(BankNote.FIFTY, 5);
-        addNote(BankNote.HUNDRED, 5);
+        try {
+            calculateBalanceFromFile();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         for (BankNote note :
                 notes) {
@@ -32,11 +36,22 @@ public class ATM {
         return balance;
     }
 
-    private void addNote(BankNote note, int times) {
-        for (int i = 0; i < times; i++) {
-            notes.add(note);
+    private void calculateBalanceFromFile() throws FileNotFoundException {
+        String fileLocation = "src/test/resources/notes.txt";
+        Scanner scanner = new Scanner(new File(fileLocation));
+
+        while (scanner.hasNext()) {
+            String note = scanner.next();
+            switch (note) {
+                case "100" -> notes.add(BankNote.HUNDRED);
+                case "50" -> notes.add(BankNote.FIFTY);
+                case "20" -> notes.add(BankNote.TWENTY);
+                case "10" -> notes.add(BankNote.TEN);
+                case "5" -> notes.add(BankNote.FIVE);
+            }
         }
     }
+
 
     private void withdrawalScenario(int moneyToWithdraw) {
         if (moneyToWithdraw > 0) {
@@ -92,8 +107,6 @@ public class ATM {
         System.out.println((twentyNotes > 0 ? "*** 20 NOTES - " + twentyNotes + " ***" : ""));
         System.out.println((tenNotes > 0 ? "*** 10 NOTES - " + tenNotes + " ***" : ""));
         System.out.println((fiveNotes > 0 ? "*** 5 NOTES - " + fiveNotes + " ***" : ""));
-        
-        System.out.println("******* FAREWELL *******");
     }
 
     private int countNotes(BankNote note) {
@@ -130,6 +143,9 @@ public class ATM {
                 moneyToWithdraw = scanner.nextInt();
             }
         }
+
+        scanner.close();
+        System.out.println("******* FAREWELL *******");
     }
 }
 
