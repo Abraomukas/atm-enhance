@@ -1,4 +1,4 @@
-# main.ATM
+# ATM
 
 Simple main.ATM experiment in Java
 
